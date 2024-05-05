@@ -66,15 +66,11 @@ public class CteProject {
     public static String ADD_STR;
     public static String ADD_LDA;
     
-    public static String D_CODE;
-    public static String M_CODE;
-    public static String S_CODE;
-    public static String A_CODE;
-    public static String T_CODE;
-    
-    
-    
-    
+    public static String D_CODE="01000100";
+    public static String M_CODE="01001101";
+    public static String S_CODE="01010011";
+    public static String A_CODE="01000001";
+    public static String T_CODE="01010100";
     
     public static ArrayList<String> derived = new ArrayList<>();
     
@@ -330,7 +326,7 @@ public class CteProject {
     public static void parser(ArrayList<String> word){
         count =0;
         pass = false;
-        String sgn [] = {"/","*","+","-"};
+        //String sgn [] = {"/","*","+","-"};
         String letter [] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
         ArrayList<String> alpha = new ArrayList<>();
         ArrayList<String> answer = new ArrayList<>();
@@ -617,7 +613,7 @@ public class CteProject {
     
     public static void ICR(ArrayList<String> words){
         System.out.println(" ");
-        System.out.println("  STAGE 5: CODE GENERATION  ");
+        System.out.println(BLUE+"==============STAGE 5: CODE GENERATION  ");
         
         if(words.contains("/")){
             System.out.println(DIV_LDA);
@@ -649,7 +645,7 @@ public class CteProject {
     
     public static void COP(ArrayList<String> words){
         System.out.println(" ");
-        System.out.println("  STAGE 6: CODE OPTIMISATION  ");
+        System.out.println(BLUE+"============STAGE 6: CODE OPTIMISATION  ");
         
         if(words.contains("/")){
             System.out.println(DIV_STR);
@@ -663,7 +659,73 @@ public class CteProject {
         if(words.contains("-")){
             System.out.println(SUB_STR);
         }
+
+        MCD(words);
         
+    }
+
+    public static void MCD(ArrayList<String> words){
+        System.out.println(" ");
+        System.out.println(BLUE+"============STAGE 7: CODE OPTIMISATION  ");
+        
+        if(words.contains("/")){
+            System.out.print(D_CODE);
+            System.out.print(" "+T_CODE+" ");
+            System.out.print(" "+toBinary(""+DIV_LDA.charAt(4), 8));
+            System.out.print(" "+toBinary(""+DIV.charAt(4), 8));
+        }
+        System.out.println("");
+        if(words.contains("*")){
+            System.out.print(M_CODE);
+            System.out.print(" "+T_CODE+" ");
+            System.out.print(" "+toBinary(""+MUL_LDA.charAt(4), 8));
+            System.out.print(" "+toBinary(""+MUL.charAt(4), 8));
+        }
+        System.out.println("");
+        if(words.contains("+")){
+            System.out.print(A_CODE);
+            System.out.print(" "+T_CODE+" ");
+            System.out.print(" "+toBinary(""+ADD_LDA.charAt(4), 8));
+            System.out.print(" "+toBinary(""+ADD.charAt(4), 8));
+        }
+        System.out.println("");
+        if(words.contains("-")){
+            System.out.print(M_CODE);
+            System.out.print(" "+T_CODE+" ");
+            System.out.print(" "+toBinary(""+SUB_LDA.charAt(4), 8));
+            System.out.print(" "+toBinary(""+SUB.charAt(4), 8));
+        }
+        
+    }
+
+    public static String toBinary(String str, int bits) {
+        String result = "";
+        String tmpStr;
+        int tmpInt;
+        char[] messChar = str.toCharArray();
+    
+        for (int i = 0; i < messChar.length; i++) {
+            tmpStr = Integer.toBinaryString(messChar[i]);
+            tmpInt = tmpStr.length();
+            if(tmpInt != bits) {
+                tmpInt = bits - tmpInt;
+                if (tmpInt == bits) {
+                    result += tmpStr;
+                } else if (tmpInt > 0) {
+                    for (int j = 0; j < tmpInt; j++) {
+                        result += "0";
+                    }
+                    result += tmpStr;
+                } else {
+                    System.err.println("argument 'bits' is too small");
+                }
+            } else {
+                result += tmpStr;
+            }
+            result += " "; // separator
+        }
+    
+        return result;
     }
     
 }
