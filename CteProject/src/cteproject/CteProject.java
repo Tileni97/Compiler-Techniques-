@@ -17,6 +17,7 @@ public class CteProject {
     
     public static boolean status = false;
     public static boolean isValid = false;
+    public static boolean isNone = true;
     public static int count =0;
     public static int size =0;
     public static int newanssize =0;
@@ -24,6 +25,56 @@ public class CteProject {
     public static boolean pass = false;
     public static int controler =0;
     public static Scanner kb = new Scanner(System.in);
+    
+    public static String subt1;
+    public static String subt2;
+    
+    public static String divt1;
+    public static String divt2;
+    
+    public static String mult1;
+    public static String mult2;
+    
+    public static String addt1;
+    public static String addt2;
+    
+    public static String t1;
+    public static String t2;
+    public static String t3;
+    public static String t4;
+    public static String t5;
+    public static String t6;
+    public static String t7;
+    public static String t8;
+    public static String t9;
+    public static String t10;
+    
+    public static String DIV;
+    public static String MUL;
+    public static String SUB;
+    public static String ADD;
+    
+    public static String DIV_STR;
+    public static String DIV_LDA;
+    
+    public static String MUL_STR;
+    public static String MUL_LDA;
+    
+    public static String SUB_STR;
+    public static String SUB_LDA;
+    
+    public static String ADD_STR;
+    public static String ADD_LDA;
+    
+    public static String D_CODE;
+    public static String M_CODE;
+    public static String S_CODE;
+    public static String A_CODE;
+    public static String T_CODE;
+    
+    
+    
+    
     
     public static ArrayList<String> derived = new ArrayList<>();
     
@@ -355,6 +406,9 @@ public class CteProject {
             
             count = count-2;
         }
+        
+        alpha.removeAll(alpha);
+        answer.removeAll(answer);
     }
     
     public static void Semantic(){
@@ -375,115 +429,242 @@ public class CteProject {
         int newsize = (words.size()-1);
         
         count =0;
+        controler =0;
         while(count<newsize){
-            controler =0;
-            pass =false;
-            for(String chr:words){
-                if(!pass){
-                    pass=true;
-                    //continue;
-                }
-                else{
-                    if(chr.equals("/")){
-                        if(answerlist.isEmpty()){
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(0));
-                            break;
-                        }
-                        else{
-                            size = answerlist.size();
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(size-1));
-                            break;
-                        }
-                    }
-                }
-                controler++;
-                prev = chr;
+            for (int i = 0; i < newsize; i++) {
+                if (word.charAt(i) == '/') {
+                    divt1 = ""+ word.charAt(i-1);
+                    divt2 = ""+ word.charAt(i + 1);
+                    controler++;
+                    System.out.println("t" + controler + "= " + divt1 + word.charAt(i) + divt2);
+                    DIV_LDA = "LDA " + word.charAt(i + 1);
+                    DIV = "DIV " + word.charAt(i - 1);
+                    t1 = "STR t" + controler;
+                    DIV_STR = "DIV t" + controler + ", " + divt2 + ", " + divt1;
+                    isNone = false;
+                } 
             }
             
-            count++;
-            controler =0;
-            pass = false;
-            for(String chr:words){
-                if(!pass){
-                    pass=true;
-                }
-                else{
-                    if(chr.equals("*")){
-                        if(answerlist.isEmpty()){
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(0));
-                            break;
-                        }
-                        else{
-                            size = answerlist.size();
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(size-1));
-                            break;
-                        }
+            isNone = true;
+            for (int j = 0; j < newsize; j++) {
+                if (word.charAt(j) == '*') {
+                    mult1 = ""+word.charAt(j - 1);
+                    mult2 = ""+word.charAt(j + 1);
+                    
+                    if(mult1.equalsIgnoreCase(divt1) || mult1.equalsIgnoreCase(divt2)){
+                        controler++;
+                        System.out.println("t" + controler + "= " + "t"+(controler-1) + word.charAt(j) + mult2);
+                        MUL_LDA = "LDA t1";
+                        MUL = "MUL " + mult2;
+                        t2 = "STR t" + controler;
+                        MUL_STR = "MUL t" + controler + ", " + "t"+(controler-1) + ", " + mult2;
+                        isNone = false;
                     }
+                    if(mult2.equalsIgnoreCase(divt1) || mult2.equalsIgnoreCase(divt2)){
+                        controler++;
+                        System.out.println("t" + controler + "= " + mult1 + word.charAt(j) + "t"+(controler-1));
+                        MUL_LDA = "LDA " + mult2;
+                        MUL = "MUL t1";
+                        t2 = "STR t" + controler;
+                        MUL_STR = "MUL t" + controler + ", " + mult1 + ", " + "t"+(controler-1);
+                        isNone = false;
+                    }
+                    
+                    if(isNone){
+                        controler++;
+                        System.out.println("t" + controler + "= " + mult1 + word.charAt(j) + mult2);
+                        MUL_LDA = "LDA " + mult1;
+                        MUL = "MUL "+ mult2;
+                        t3 = "STR t" + controler;
+                        MUL_STR = "MUL t" + controler + ", " + mult1 + ", " + mult2;
+                    } 
                 }
-                controler++;
-                prev = chr;
+            }
+            isNone =true;
+            for (int j = 0; j < newsize; j++) {
+                if (word.charAt(j) == '+') {
+                    addt1 = ""+word.charAt(j - 1);
+                    addt2 = ""+word.charAt(j + 1);
+                    
+                    if(addt1.equalsIgnoreCase(divt1) || addt1.equalsIgnoreCase(divt2)){
+                        controler++;
+                        System.out.println("t" + controler + "= " + "t"+(controler-2) + word.charAt(j) + addt2);
+                        ADD_LDA = "LDA t1";
+                        ADD = "ADD " + addt2;
+                        t3 = "STR t" + controler;
+                        ADD_STR = "ADD t" + controler + ", " + "t"+(controler-2) + ", " + addt2;
+                        isNone = false;
+                    }
+                    if((addt2.equalsIgnoreCase(divt1) || addt2.equalsIgnoreCase(divt2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + addt1 + word.charAt(j) + "t"+(controler-2));
+                        ADD_LDA = "LDA " + addt1;
+                        ADD = "ADD t1";
+                        t3 = "STR t" + controler;
+                        ADD_STR = "ADD t" + controler + ", " + addt1 + ", " + "t"+(controler-2);
+                        isNone = false;
+                    }
+                    
+                    if((addt1.equalsIgnoreCase(mult1) || addt1.equalsIgnoreCase(mult2)) && (addt2.equalsIgnoreCase(divt1) || addt2.equalsIgnoreCase(divt2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + "t"+(controler-1) + word.charAt(j) + "t"+(controler-2));
+                        ADD_LDA = "LDA t2";
+                        ADD = "ADD " + addt2;
+                        t3 = "STR t" + controler;
+                        ADD_STR = "ADD t" + controler + ", " + "t"+(controler-1) + ", " + addt2;
+                        isNone = false;
+                    }
+                    if((addt1.equalsIgnoreCase(divt1) || addt1.equalsIgnoreCase(divt2)) && (addt2.equalsIgnoreCase(mult1) || addt2.equalsIgnoreCase(mult2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + "t"+(controler-2) + word.charAt(j) + "t"+(controler-1));
+                        ADD_LDA = "LDA t2";
+                        ADD = "ADD " + addt2;
+                        t3 = "STR t" + controler;
+                        ADD_STR = "ADD t" + controler + ", " + "t"+(controler-1) + ", " + addt2;
+                        isNone = false;
+                    }
+                    
+                    if((addt2.equalsIgnoreCase(mult1) || addt2.equalsIgnoreCase(mult2)) &&(!addt2.equalsIgnoreCase(divt1) || !addt2.equalsIgnoreCase(divt2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + addt1 + word.charAt(j) + "t"+(controler-1));
+                        ADD_LDA = "LDA " + addt1;
+                        ADD = "ADD t2";
+                        t3 = "STR t" + controler;
+                        ADD_STR = "ADD t" + controler + ", " + addt1 + ", " + "t"+(controler-1);
+                        isNone = false;
+                    }
+                    
+                    if(isNone){
+                        controler++;
+                        System.out.println("t" + controler + "= " + addt1 + word.charAt(j) + addt2);
+                        ADD_LDA = "LDA " + addt1;
+                        ADD = "ADD "+ addt2;
+                        t3 = "STR t" + controler;
+                        ADD_STR = "ADD t" + controler + ", " + addt1 + ", " + addt2;
+                    } 
+                }
             }
             
-            count++;
-            controler =0;
-            pass = false;
-            for(String chr:words){
-                if(!pass){
-                    pass=true;
-                }
-                else{
-                    if(chr.equals("+")){
-                        
-                        if(answerlist.isEmpty()){
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(0));
-                            break;
-                        }
-                        else{
-                            size = answerlist.size();
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(size-1));
-                            break;
-                        }
+            isNone =true;
+            for (int j = 0; j < newsize; j++) {
+                if (word.charAt(j) == '-') {
+                    subt1 = ""+word.charAt(j - 1);
+                    subt2 = ""+word.charAt(j + 1);
+                    
+                    if(subt1.equalsIgnoreCase(divt1) || subt1.equalsIgnoreCase(divt2)){
+                        controler++;
+                        System.out.println("t" + controler + "= " + "t"+(controler-3) + word.charAt(j) + subt2);
+                        SUB_LDA = "LDA t1";
+                        SUB = "SUB " + subt2;
+                        t4 = "STR t" + controler;
+                        SUB_STR = "SUB t" + controler + ", " + "t"+(controler-3) + ", " + subt2;
+                        isNone = false;
                     }
+                    if((subt2.equalsIgnoreCase(divt1) || subt2.equalsIgnoreCase(divt2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + subt1 + word.charAt(j) + "t"+(controler-3));
+                        SUB_LDA = "LDA " + subt1;
+                        SUB = "SUB t1";
+                        t4 = "STR t" + controler;
+                        SUB_STR = "SUB t" + controler + ", " + subt1 + ", " + "t"+(controler-3);
+                        isNone = false;
+                    }
+                    
+                    if((subt1.equalsIgnoreCase(mult1) || subt1.equalsIgnoreCase(mult2)) && (subt2.equalsIgnoreCase(divt1) || subt2.equalsIgnoreCase(divt2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + "t"+(controler-2) + word.charAt(j) + "t"+(controler-3));
+                        SUB_LDA = "LDA t2";
+                        SUB = "SUB " + subt2;
+                        t4 = "STR t" + controler;
+                        SUB_STR = "SUB t" + controler + ", " + "t"+(controler-2) + ", " + subt2;
+                        isNone = false;
+                    }
+                    if((subt1.equalsIgnoreCase(divt1) || subt1.equalsIgnoreCase(divt2)) && (subt2.equalsIgnoreCase(mult1) || subt2.equalsIgnoreCase(mult2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + "t"+(controler-3) + word.charAt(j) + "t"+(controler-2));
+                        SUB_LDA = "LDA t2";
+                        SUB = "SUB " + subt2;
+                        t4 = "STR t" + controler;
+                        SUB_STR = "SUB t" + controler + ", " + "t"+(controler-2) + ", " + subt2;
+                        isNone = false;
+                    }
+                    
+                    if((subt2.equalsIgnoreCase(mult1) || subt2.equalsIgnoreCase(mult2)) &&(!subt2.equalsIgnoreCase(divt1) || !subt2.equalsIgnoreCase(divt2))){
+                        controler++;
+                        System.out.println("t" + controler + "= " + subt1 + word.charAt(j) + "t"+(controler-1));
+                        SUB_LDA = "LDA " + subt1;
+                        SUB = "SUB t2";
+                        t4 = "STR t" + controler;
+                        ADD_STR = "SUB t" + controler + ", " + subt1 + ", " + "t"+(controler-1);
+                        isNone = false;
+                    }
+                    
+                    if(isNone){
+                        controler++;
+                        System.out.println("t" + controler + "= " + subt1 + word.charAt(j) + subt2);
+                        SUB_LDA = "LDA " + subt1;
+                        SUB = "SUB "+ subt2;
+                        t4 = "STR t" + controler;
+                        SUB_STR = "SUB t" + controler + ", " + subt1 + ", " + subt2;
+                    } 
                 }
-                controler++;
-                prev = chr;
             }
             
-            count++;
-            controler =0;
-            pass = false;
-            for(String chr:words){
-                if(!pass){
-                    pass=true;
-                }
-                else{
-                    if(chr.equals("-")){
-                        if(answerlist.isEmpty()){
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(0));
-                        }
-                        else{
-                            size = answerlist.size();
-                            answerlist.add("T"+count+prev+chr+words.get(controler+1));
-                            System.out.println(answerlist.get(size-1));
-                        }
-                    }
-                }
-                controler++;
-                prev = chr;
-            }
-            controler =0;
-            pass = false;
-            count++;
             break;
+        }
+        ICR(words);
+    }
+    
+    public static void ICR(ArrayList<String> words){
+        System.out.println(" ");
+        System.out.println("  STAGE 5: CODE GENERATION  ");
+        
+        if(words.contains("/")){
+            System.out.println(DIV_LDA);
+            System.out.println(DIV);
+            System.out.println(t1);
+        }
+        System.out.println("");
+        if(words.contains("*")){
+            System.out.println(MUL_LDA);
+            System.out.println(MUL);
+            System.out.println(t2);
+        }
+        System.out.println("");
+        if(words.contains("+")){
+            System.out.println(ADD_LDA);
+            System.out.println(ADD);
+            System.out.println(t3);
+        }
+        System.out.println("");
+        if(words.contains("-")){
+            System.out.println(SUB_LDA);
+            System.out.println(SUB);
+            System.out.println(t4);
+        }
+        
+        COP(words);
+        
+    }
+    
+    public static void COP(ArrayList<String> words){
+        System.out.println(" ");
+        System.out.println("  STAGE 6: CODE OPTIMISATION  ");
+        
+        if(words.contains("/")){
+            System.out.println(DIV_STR);
+        }
+        if(words.contains("*")){
+            System.out.println(MUL_STR);
+        }
+        if(words.contains("+")){
+            System.out.println(ADD_STR);
+        }
+        if(words.contains("-")){
+            System.out.println(SUB_STR);
         }
         
     }
     
 }
+
