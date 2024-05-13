@@ -5,6 +5,7 @@
  */
 package cteproject;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -14,15 +15,9 @@ import java.util.Scanner;
  * @author shiko
  */
 public class CteProject {
-    
-    public static boolean status = false;
-    public static boolean isValid = false;
+
     public static boolean isNone = true;
     public static int count =0;
-    public static int size =0;
-    public static int newanssize =0;
-    public static String prev = "";
-    public static boolean pass = false;
     public static int controler =0;
     public static Scanner kb = new Scanner(System.in);
     
@@ -42,12 +37,6 @@ public class CteProject {
     public static String t2;
     public static String t3;
     public static String t4;
-    public static String t5;
-    public static String t6;
-    public static String t7;
-    public static String t8;
-    public static String t9;
-    public static String t10;
     
     public static String DIV;
     public static String MUL;
@@ -72,26 +61,18 @@ public class CteProject {
     public static String A_CODE="01000001";
     public static String T_CODE="01010100";
     
-    public static ArrayList<String> derived = new ArrayList<>();
-    
     public static boolean isError = false;
     
     public static ArrayList<String> tokens = new ArrayList<>();
     public static Errors errors = new Errors();
     public static ArrayList<String> newlist = new ArrayList<>();
     public static String word ="";
-    public static ArrayList<String> placeholder = new ArrayList<>();
-    public static ArrayList<String> answerlist = new ArrayList<>();
-    
-    public static String YELLOW = "\u001B[33m";
     public static String RED = "\u001B[31m";
-    public static String RESET = "\u001B[0m";
     public static String GREEN = "\u001B[32m";
     public static String BLUE = "\u001B[34m";
     public static String TRY = "\u001B[35m";
     
     public static boolean ready = true;
-    public static boolean valid = false;
 
     /**
      * @param args the command line arguments
@@ -141,7 +122,7 @@ public class CteProject {
             
             String token = tokens.get(i);
             int size = token.length();
-            System.out.println(token);
+            System.out.println("\nword "+i+" "+token+"\n");
             
             
             // calling our functions for error checking, this functions return true if an eror occured and false if no error !!!
@@ -277,6 +258,7 @@ public class CteProject {
                 }
                
                 operation(newlist);
+                tokens.removeAll(tokens);
                 anothertrasection();
                 
             }
@@ -294,13 +276,19 @@ public class CteProject {
     
     
     
-    public static void operation(ArrayList<String> word){
+    public static void operation(ArrayList<String> words){
         
         System.out.println(BLUE+"======STAGE1: COMPILER TECHNIQUES--> LEXICAL ANALYSIS-Scanner\n" +
         "\n" +
         "SYMBOL TABLE COMPRISING ATTRIBUTES AND TOKENS:");
+
+        String word = "";
+
+        for(String wordchr : words){
+            word =word+wordchr;
+        }
         
-        for(String letter : word) {
+        for(String letter : words) {
             
             if(letter.equalsIgnoreCase("+") || letter.equalsIgnoreCase("-") || letter.equalsIgnoreCase("/") || letter.equalsIgnoreCase("*")){
                 System.out.println(BLUE+"TOKEN#"+(count)+" "+letter+" Operator                                                              ");
@@ -311,100 +299,84 @@ public class CteProject {
             
             count++;
         }
-        System.out.println(BLUE+"Total number of Tokens: "+word.size());
+        System.out.println(BLUE+"Total number of Tokens: "+words.size());
         System.out.println(GREEN+"The Grammar and Production rules:\nE -> E\nE -> |E+E|E/E|E*E|E+E|\nE -> E1|E2|E3|E4...E26\n [E1|E2|E3|...|E26] -> {A|B|C|...|Z|a|b|c...|z]}");
         
-        parser(word);
+        parser(words);
         Semantic();
-        ICG(word);
+        ICG(words);
         
         System.out.println("\n");
         
     }
     
     // parser syntax
-    public static void parser(ArrayList<String> word){
-        count =0;
-        pass = false;
-        //String sgn [] = {"/","*","+","-"};
-        String letter [] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
-        ArrayList<String> alpha = new ArrayList<>();
-        ArrayList<String> answer = new ArrayList<>();
-        
-        System.out.println("");
-        
-        System.out.println(BLUE+"======STAGE2: COMPILER TECHNIQUES--> SYNTAX ANALYSIS-Parser\n");
-        System.out.print(BLUE+"GET A DERIVATION FOR : ");
-        
-        word.forEach((words) -> {
-            System.out.print(GREEN+words);
-        });
-        
-        alpha.addAll(Arrays.asList(letter));
-        
-        System.out.println("\n");
-        
-        for(String words: word){
-            alpha.stream().filter((chr) -> (words.equalsIgnoreCase(chr))).map((chr) -> {
-                pass = true;
-                return chr;
-            }).map((chr) -> {
-                System.out.print(BLUE+"E"+(alpha.indexOf(chr)+1));
-                return chr;
-            }).map((chr) -> {
-                answer.add(""+(alpha.indexOf(chr)+1));
-                return chr;
-            }).forEachOrdered((chr) -> {
-                derived.add(words+(alpha.indexOf(chr)+1));
-            });
-            if(!pass){
-                System.out.print(BLUE+" "+words+" ");
-                answer.add(words);
-                derived.add(words);
-            }
-            pass = false;
+    public static void parser(ArrayList<String> words){
+        System.out.println("\n"+BLUE+"============STAGE2: SYNTAX ANALYSIS \n\n");
+        String word = "";
+
+        for(String wordchr : words){
+            word =word+wordchr;
         }
-        
-        System.out.println("");
-        derived.forEach((words) -> {
-            System.out.print(TRY+words+" ");
-        });
-        
-        System.out.println("");
-        
-        count = (answer.size()-1);
-        
-        while(count >= 0){
-            answer.stream().filter((words) -> (words.equalsIgnoreCase(answer.get(count)))).forEachOrdered((_item) -> {
-                derived.set(count, "digit");
-            });
-            derived.forEach((derv) -> {
-                System.out.print(GREEN+derv+" ");
-            });
-            
-            System.out.println("");
-            
-            count = count-2;
+
+        String deriv;
+        switch (word.length()) {
+            case 3:
+                deriv = "E\n" +
+                        "E" + word.charAt(1) + "E\n" +
+                        "E1" + word.charAt(1) + "E\n" +
+                        "E1" + word.charAt(1) + "E2\n" +
+                        word.charAt(0) + word.charAt(1) + "E2\n" +
+                        word + "\t\t\t" + "The final string";
+                break;
+            case 5:
+                deriv = "E\n" +
+                        "E" + word.charAt(1) + "E\n" +
+                        "E" + word.charAt(1) + "E" + word.charAt(3) + "E\n" +
+                        "E1" + word.charAt(1) + "E" + word.charAt(3) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E3\n" +
+                        word.charAt(0) + word.charAt(1) + "E2" + word.charAt(3) + "E3\n" +
+                        word.charAt(0) + word.charAt(1) + word.charAt(2) + word.charAt(3) + "E3\n" +
+                        word + "\t\t\t" + "The final string";
+                break;
+            case 7:
+                deriv = "E\n" +
+                        "E" + word.charAt(1) + "E\n" +
+                        "E" + word.charAt(1) + "E" + word.charAt(3) + "E\n" +
+                        "E" + word.charAt(1) + "E" + word.charAt(3) + "E" + word.charAt(5) + "E\n" +
+                        "E1" + word.charAt(1) + "E" + word.charAt(3) + "E" + word.charAt(5) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E" + word.charAt(5) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E3" + word.charAt(5) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E3" + word.charAt(5) + "E4\n" +
+                        word.charAt(0) + word.charAt(1) + "E2" + word.charAt(3) + "E3" + word.charAt(5) + "E4\n" +
+                        word.charAt(0) + word.charAt(1) + word.charAt(2) + word.charAt(3) + "E3" + word.charAt(5) + "E4\n" +
+                        word.charAt(0) + word.charAt(1) + word.charAt(2) + word.charAt(3) + word.charAt(4) + word.charAt(5) + "E4\n" +
+                        word + "\t\t\t" + "The final string";
+                break;
+            case 9:
+                deriv = "E\n" +
+                        "E" + word.charAt(1) + "E\n" +
+                        "E" + word.charAt(1) + "E" + word.charAt(3) + "E\n" +
+                        "E" + word.charAt(1) + "E" + word.charAt(3) + "E" + word.charAt(5) + "E\n" +
+                        "E" + word.charAt(1) + "E" + word.charAt(3) + "E" + word.charAt(5) + "E" + word.charAt(7) + "E\n" +
+                        "E1" + word.charAt(1) + "E" + word.charAt(3) + "E" + word.charAt(5) + "E" + word.charAt(7) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E" + word.charAt(5) + "E" + word.charAt(7) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E3" + word.charAt(5) + "E" + word.charAt(7) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E3" + word.charAt(5) + "E4" + word.charAt(7) + "E\n" +
+                        "E1" + word.charAt(1) + "E2" + word.charAt(3) + "E3" + word.charAt(5) + "E4" + word.charAt(7) + "E5\n" +
+                        word.charAt(0) + word.charAt(1) + "E2" + word.charAt(3) + "E3" + word.charAt(5) + "E4" + word.charAt(7) + "E5\n" +
+                        word.charAt(0) + word.charAt(1) + word.charAt(2) + word.charAt(3) + "E3" + word.charAt(5) + "E4" + word.charAt(7) + "E5\n" +
+                        word.charAt(0) + word.charAt(1) + word.charAt(2) + word.charAt(3) + word.charAt(4) + word.charAt(5) + "E4" + word.charAt(7) + "E5\n" +
+                        word.charAt(0) + word.charAt(1) + word.charAt(2) + word.charAt(3) + word.charAt(4) + word.charAt(5) + word.charAt(6) + word.charAt(7) + "E5\n" +
+                        word + "\t\t\t" + "The final string";
+                break;
+            default:
+                deriv = "Something wrong";
+                break;
         }
-        
-        count = (answer.size()-1);
-        
-        while(count >= 0){
-            answer.stream().filter((words) -> (words.equalsIgnoreCase(answer.get(count)))).forEachOrdered((words) -> {
-                derived.set(count, words);
-            });
-            
-            derived.forEach((derv) -> {
-                System.out.print(GREEN+derv+" ");
-            });
-            
-            System.out.println("");
-            
-            count = count-2;
-        }
-        
-        alpha.removeAll(alpha);
-        answer.removeAll(answer);
+        System.out.println(deriv);
+
     }
     
     public static void Semantic(){
@@ -418,9 +390,14 @@ public class CteProject {
     public static void ICG(ArrayList<String> words){
         
         
-        System.out.println("\n"+BLUE+"======STAGE4: COMPILER TECHNIQUES--> ITERMEDIATE CODE GENERATION\n" +
-        "\n" +
-        "INPUT STRING: "+word);
+        System.out.println("\n"+BLUE+"======STAGE4: COMPILER TECHNIQUES--> ITERMEDIATE CODE GENERATION\n");
+        word="";
+        for(String wordchr : words){
+            word = word+wordchr;
+        }
+
+        System.out.println("Input String: "+word+"\n");
+
         
         int newsize = (words.size()-1);
         
@@ -491,15 +468,6 @@ public class CteProject {
                         ADD_STR = "ADD t" + controler + ", " + "t"+(controler-2) + ", " + addt2;
                         isNone = false;
                     }
-                    if((addt2.equalsIgnoreCase(divt1) || addt2.equalsIgnoreCase(divt2))){
-                        controler++;
-                        System.out.println("t" + controler + "= " + addt1 + word.charAt(j) + "t"+(controler-2));
-                        ADD_LDA = "LDA " + addt1;
-                        ADD = "ADD t1";
-                        t3 = "STR t" + controler;
-                        ADD_STR = "ADD t" + controler + ", " + addt1 + ", " + "t"+(controler-2);
-                        isNone = false;
-                    }
                     
                     if((addt1.equalsIgnoreCase(mult1) || addt1.equalsIgnoreCase(mult2)) && (addt2.equalsIgnoreCase(divt1) || addt2.equalsIgnoreCase(divt2))){
                         controler++;
@@ -522,11 +490,11 @@ public class CteProject {
                     
                     if((addt2.equalsIgnoreCase(mult1) || addt2.equalsIgnoreCase(mult2)) &&(!addt2.equalsIgnoreCase(divt1) || !addt2.equalsIgnoreCase(divt2))){
                         controler++;
-                        System.out.println("t" + controler + "= " + addt1 + word.charAt(j) + "t"+(controler-1));
-                        ADD_LDA = "LDA " + addt1;
-                        ADD = "ADD t2";
+                        System.out.println("t" + controler + "= " + "t"+(controler-1) + word.charAt(j) + addt1);
+                        ADD_LDA = "LDA t2";
+                        ADD = "ADD "+addt1;
                         t3 = "STR t" + controler;
-                        ADD_STR = "ADD t" + controler + ", " + addt1 + ", " + "t"+(controler-1);
+                        ADD_STR = "ADD t" + controler + ", " + "t"+(controler-1) + ", " + addt1;
                         isNone = false;
                     }
                     
@@ -585,13 +553,13 @@ public class CteProject {
                         isNone = false;
                     }
                     
-                    if((subt2.equalsIgnoreCase(mult1) || subt2.equalsIgnoreCase(mult2)) &&(!subt2.equalsIgnoreCase(divt1) || !subt2.equalsIgnoreCase(divt2))){
+                    if((subt2.equalsIgnoreCase(mult1) || subt2.equalsIgnoreCase(mult2)) &&(!subt1.equalsIgnoreCase(divt1) || !subt1.equalsIgnoreCase(divt2))){
                         controler++;
                         System.out.println("t" + controler + "= " + subt1 + word.charAt(j) + "t"+(controler-1));
                         SUB_LDA = "LDA " + subt1;
                         SUB = "SUB t2";
                         t4 = "STR t" + controler;
-                        ADD_STR = "SUB t" + controler + ", " + subt1 + ", " + "t"+(controler-1);
+                        SUB_STR = "SUB t" + controler + ", " + subt1 + ", " + "t"+(controler-1);
                         isNone = false;
                     }
                     
@@ -690,11 +658,17 @@ public class CteProject {
         }
         System.out.println("");
         if(words.contains("-")){
-            System.out.print(M_CODE);
+            System.out.print(S_CODE);
             System.out.print(" "+T_CODE+" ");
             System.out.print(" "+toBinary(""+SUB_LDA.charAt(4), 8));
             System.out.print(" "+toBinary(""+SUB.charAt(4), 8));
         }
+
+        System.out.println("\n\n================================");
+        System.out.println(BLUE+"            DONE ");
+        System.out.println("================================\n\n");
+
+        reset();
         
     }
 
@@ -727,6 +701,10 @@ public class CteProject {
     
         return result;
     }
-    
+
+    public static void reset() {
+        newlist.removeAll(newlist);
+
+    }
 }
 
