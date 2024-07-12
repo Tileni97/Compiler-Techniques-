@@ -1,34 +1,27 @@
-Mini-Compiler for V Language
-This project focuses on developing a mini-compiler in Java for a simplified programming language called "V language." The compiler is designed to process input code and translate it into machine-executable code through various stages of compilation.
+# Mini Java Compiler
 
-Key Features:
+This project is a mini Java compiler developed by [Gideon S.V](https://github.com/Shikongo19), [Tangi H.S Petrus](https://github.com/Supertangi), and [C. T Hango](https://github.com/Tileni97). The compiler is designed to take Java source code as input and generate corresponding assembly code or bytecode as output.
 
-Lexical Analysis (Scanner): Identifies and categorizes tokens (keywords, identifiers, operators, symbols) in the input code.
-Syntax Analysis (Parser): Checks the grammatical structure of the code based on the defined rules of the V language.
-Semantic Analysis: Interprets the meaning of the code and checks for semantic errors (e.g., type mismatches, invalid operations).
-Intermediate Code Representation (ICR): Generates a simplified intermediate representation of the code for further processing.
-Code Generation (CG): Translates the intermediate code into target machine code (binary code).
-Code Optimization (CO): Optionally improves the efficiency of the generated machine code.
-Target Machine Code (TMC): The final binary code that can be executed by the machine.
-Input Processing:
+## Key Features
 
-The compiler can process the input code in two ways:
+- **Lexical Analysis:** The compiler identifies and categorizes tokens (keywords, identifiers, operators, etc.) in the Java source code.
+- **Syntax Analysis:** The compiler checks the grammatical structure of the code to ensure it adheres to the rules of the Java language.
+- **Semantic Analysis:** The compiler performs additional checks to ensure the code is logically sound, such as type checking and symbol table management.
+- **Code Generation:** The compiler translates the analyzed code into lower-level assembly code or bytecode that can be executed by a machine or virtual machine.
+- **Code Optimization:** The compiler may apply various techniques to improve the efficiency of the generated code, such as eliminating redundant instructions or optimizing register usage.
 
-Line by Line (Iteratively): Each line of code is processed sequentially.
-All at Once: The entire code is processed as a whole.
-Error Handling:
+## Team Members
 
-The compiler includes error handling mechanisms to detect and report various types of errors:
+- **Gideon S.V:** Responsible for Semantic Analysis and Intermediate Code Representation (ICR).
+- **Tangi H.S Petrus:** Responsible for Code Generation and Code Optimization.
+- **C. T Hango:** Responsible for Syntax Analysis and Lexical Analysis.
 
-Lexical Errors: Invalid characters or tokens.
-Syntax Errors: Incorrect grammar or structure.
-Semantic Errors: Invalid operations or type mismatches.
-V Language Rules:
+## How to Use
 
-The V language has specific rules regarding allowed keywords, identifiers, operators, symbols, and disallowed characters/combinations. These rules are strictly enforced by the compiler.
+1. **Input:** Provide the Java source code file as input to the compiler.
+2. **Compilation:** The compiler will process the input code, performing lexical, syntax, and semantic analysis.
+3. **Output:** If the code is valid, the compiler will generate the corresponding assembly code or bytecode. If there are errors, the compiler will report them.
 
-Note:
+## Disclaimer
 
-Only lines 6 and 7 of the provided sample code undergo all seven stages of compilation. The other lines are only checked for errors.
-
-This project aims to provide a practical understanding of compiler construction and the various stages involved in translating a high-level programming language into machine-executable code.
+This is a mini compiler and may not support all features of the full Java language. It is intended for educational purposes and as a demonstration of compiler construction principles.
